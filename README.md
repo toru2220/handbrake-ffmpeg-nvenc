@@ -1,2 +1,2 @@
-# handbrake-ffmpeg-nvenc
-docker image for HandBrakeCLI, ffmpeg with NVENC
+# ffmpeg-nvenc
+docker image for ffmpeg enable nvenc
