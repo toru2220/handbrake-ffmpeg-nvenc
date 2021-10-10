@@ -15,6 +15,16 @@ mbitrate=${7:-1200000}
 encodeopt=${8:-"-movflags +faststart -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"}
 
 count=1
+
+if [ -s "${targetdir}/encode-in-progress" ]; then
+ echo "${targetdir} is encoding by other process. skip current job"
+ return 0
+else
+
+fi
+
+
+
 for file in ${targetdir}/*.${targetext}; do
 
  if [ -s "${file}" ]; then
@@ -69,9 +79,11 @@ for file in ${targetdir}/*.${targetext}; do
  count=$((count+1))
 
  if [ $count -gt 10 ]; then
+  rm -f "${targetdir}/encode-in-progress"
   return 0
  fi
  
 done
 
+rm -f "${targetdir}/encode-in-progress"
 

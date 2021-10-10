@@ -16,6 +16,14 @@ encodeopt=${8:-"-e nvenc_h264 -r 29.97 --pfr -E faac -B 160 -6 dpl2 -R Auto -D 0
 destext=${9:-mp4}
 
 count=1
+
+if [ -s "${targetdir}/encode-in-progress" ]; then
+ echo "${targetdir} is encoding by other process. skip current job"
+ return 0
+else
+
+fi
+
 for file in ${targetdir}/*.${targetext}; do
 
  if [ -s "${file}" ]; then
@@ -63,7 +71,10 @@ for file in ${targetdir}/*.${targetext}; do
  count=$((count+1))
 
  if [ $count -gt 10 ]; then
+  rm -f "${targetdir}/encode-in-progress"
   return 0
  fi
  
 done
+
+rm -f "${targetdir}/encode-in-progress"
