@@ -25,16 +25,16 @@ do
   var_name_ffmpeg_target_ext="ffmpeg_target_ext_${i}"
   var_name_ffmpeg_max_height="ffmpeg_max_height_${i}"
   var_name_ffmpeg_max_bitrate="ffmpeg_max_bitrate_${i}"
-  ffmpeg_in="/ffmpeg_in_"${i}
-  ffmpeg_out="/ffmpeg_out_"${i}
+  ffmpeg_in="/ffmpeg-in-"${i}
+  ffmpeg_out="/ffmpeg-out-"${i}
 
   var_name_handbrake_encode_opt="handbrake_encode_opt_${i}"
   var_name_handbrake_keep_file="handbrake_keep_file_${i}"
   var_name_handbrake_target_ext="handbrake_target_ext_${i}"
   var_name_handbrake_max_height="handbrake_max_height_${i}"
   var_name_handbrake_max_bitrate="handbrake_max_bitrate_${i}"
-  handbrake_in="/handbrake_in_"${i}
-  handbrake_out="/handbrake_out_"${i}
+  handbrake_in="/handbrake-in-"${i}
+  handbrake_out="/handbrake-out-"${i}
 
   eval "ffmpeg_encode_opt_${i}=\"\${FFMPEG_ENCODE_OPT_$i:-\$FFMPEG_ENCODE_OPT_DEFAULT}\""
   eval "ffmpeg_keep_file_${i}=\"\${FFMPEG_KEEP_FILE_$i:-\$FFMPEG_KEEP_FILE_DEFAULT}\""
