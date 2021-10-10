@@ -20,7 +20,7 @@ if [ -s "${targetdir}/encode-in-progress" ]; then
  echo "${targetdir} is encoding by other process. skip current job"
  return 0
 else
-
+ touch "${targetdir}/encode-in-progress"
 fi
 
 
