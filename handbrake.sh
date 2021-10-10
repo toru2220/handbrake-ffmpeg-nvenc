@@ -41,7 +41,7 @@ for file in ${targetdir}/*.${targetext}; do
   fi
   
   echo HandBrakeCLI -i "${file}" -t ${titleid} -b ${mbitrate} -X ${mheight} ${encodeopt} -o "${destfile}"
-  HandBrakeCLI -i "${file}" -t ${titleid} -b ${mbitrate} -X ${mheight} ${encodeopt} -o "${destfile}"
+  time HandBrakeCLI -i "${file}" -t ${titleid} -b ${mbitrate} -X ${mheight} ${encodeopt} -o "${destfile}"
 
  done
  

@@ -47,7 +47,7 @@ for file in ${targetdir}/*.${targetext}; do
  echo ${height} to ${maxheight}
  echo ${bitrate} to ${maxbitrate}
 
- ffmpeg -i "${file}" ${encodeopt} -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
+ time ffmpeg -i "${file}" ${encodeopt} -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
 
  sync
 
