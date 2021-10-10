@@ -12,7 +12,7 @@ outputdir=${4:-`pwd`}
 encodedlog=${5:-`pwd`/encoded.log}
 mheight=${6:-720}
 mbitrate=${7:-1200000}
-encodeopt=${8:-"-movflags +faststart -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"}
+encodeopt=${8:-"-movflags +faststart -map_metadata 0 -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"}
 
 count=1
 

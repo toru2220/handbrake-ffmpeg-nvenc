@@ -7,7 +7,7 @@ tsp -S $max_concurrent
 
 ENCODED_LOG=/conf
 
-FFMPEG_ENCODE_OPT_DEFAULT="-movflags +faststart -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"
+FFMPEG_ENCODE_OPT_DEFAULT="-movflags +faststart -map_metadata 0 -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"
 FFMPEG_KEEP_FILE_DEFAULT=1
 FFMPEG_TARGET_EXT_DEFAULT=mp4
 FFMPEG_MAX_HEIGHT_DEFAULT=720
