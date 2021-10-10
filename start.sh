@@ -1,7 +1,9 @@
 #!/bin/bash
 
 find /*-in-* -type f -name "encode-in-progress" -exec rm "{}" \;
-tsp -S 2
+
+max_concurrent=${MAX_CONCURRENT:-1}
+tsp -S $max_concurrent
 
 ENCODED_LOG=/conf
 
