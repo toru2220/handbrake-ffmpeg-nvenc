@@ -2,6 +2,7 @@
 
 tsp -S 2
 
+TIMEFORMAT="command-time:%R"
 ENCODED_LOG=/conf
 
 FFMPEG_ENCODE_OPT_DEFAULT="-movflags +faststart -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"
