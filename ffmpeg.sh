@@ -16,7 +16,7 @@ encodeopt=${8:-"-movflags +faststart -c:v h264_nvenc -profile:v high -level:v 4.
 
 count=1
 
-if [ -s "${targetdir}/encode-in-progress" ]; then
+if [ -f "${targetdir}/encode-in-progress" ]; then
  echo "${targetdir} is encoding by other process. skip current job"
  return 0
 else
@@ -27,8 +27,8 @@ fi
 
 for file in ${targetdir}/*.${targetext}; do
 
- if [ -s "${file}" ]; then
-  : 
+ if [ -f "${file}" ]; then
+  :
  else
   echo "file not found:${file}"
   continue
