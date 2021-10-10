@@ -46,6 +46,7 @@ for file in ${targetdir}/*.${targetext}; do
  echo ${file}
  echo ${height} to ${maxheight}
  echo ${bitrate} to ${maxbitrate}
+ echo ffmpeg -i "${file}" ${encodeopt} -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
 
  ffmpeg -i "${file}" ${encodeopt} -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
 
