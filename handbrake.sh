@@ -68,6 +68,11 @@ for file in ${targetdir}/*.${targetext}; do
   rm "${file}"
  fi
 
+ if [ ! -s "${destfile}" ]; then
+  echo "file is empty. deleted."
+  rm -f "${destfile}"
+ fi
+
  count=$((count+1))
 
  if [ $count -gt 10 ]; then
