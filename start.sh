@@ -51,10 +51,10 @@ do
   eval "handbrake_max_bitrate_${i}=\"\${HANDBRAKE_MAX_BITRATE_$i:-\$HANDBRAKE_MAX_BITRATE_DEFAULT}\""
 
   if [ `tsp -l | grep -E queued\|running | wc -l` -lt 20 ] ; then
-   JOBID=`tsp ./handbrake.sh ${!var_name_handbrake_keep_file} ${handbrake_in} ${!var_name_handbrake_target_ext} ${handbrake_out} "${ENCODED_LOG}/encoded.log" ${!var_name_handbrake_max_height} ${!var_name_handbrake_max_bitrate} "${!var_name_handbrake_encode_opt}"`
+   JOBID=`tsp -n ./handbrake.sh ${!var_name_handbrake_keep_file} ${handbrake_in} ${!var_name_handbrake_target_ext} ${handbrake_out} "${ENCODED_LOG}/encoded.log" ${!var_name_handbrake_max_height} ${!var_name_handbrake_max_bitrate} "${!var_name_handbrake_encode_opt}"`
    echo "----- task-spooler job:${JOBID} details -----"
    tsp -i $JOBID
-   JOBID=`tsp ./ffmpeg.sh ${!var_name_ffmpeg_keep_file} ${ffmpeg_in} ${!var_name_ffmpeg_target_ext} ${ffmpeg_out} "${ENCODED_LOG}/encoded.log" ${!var_name_ffmpeg_max_height} ${!var_name_ffmpeg_max_bitrate} "${!var_name_ffmpeg_encode_opt}"`
+   JOBID=`tsp -n ./ffmpeg.sh ${!var_name_ffmpeg_keep_file} ${ffmpeg_in} ${!var_name_ffmpeg_target_ext} ${ffmpeg_out} "${ENCODED_LOG}/encoded.log" ${!var_name_ffmpeg_max_height} ${!var_name_ffmpeg_max_bitrate} "${!var_name_ffmpeg_encode_opt}"`
    echo "----- task-spooler job:${JOBID} details -----"
    tsp -i $JOBID
   else
