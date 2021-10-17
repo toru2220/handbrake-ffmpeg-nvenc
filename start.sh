@@ -5,19 +5,19 @@ find /*-in-* -type f -name "encode-in-progress" -exec rm "{}" \;
 max_concurrent=${MAX_CONCURRENT:-1}
 tsp -S $max_concurrent
 
-ENCODED_LOG=/conf
+ENCODED_LOG=${LOGDIR:-"/conf"}
 
-FFMPEG_ENCODE_OPT_DEFAULT="-movflags +faststart -map_metadata 0 -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"
-FFMPEG_KEEP_FILE_DEFAULT=1
-FFMPEG_TARGET_EXT_DEFAULT=mp4
-FFMPEG_MAX_HEIGHT_DEFAULT=720
-FFMPEG_MAX_BITRATE_DEFAULT=1200000
+FFMPEG_ENCODE_OPT_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"-movflags +faststart -map_metadata 0 -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"}
+FFMPEG_KEEP_FILE_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"1"}
+FFMPEG_TARGET_EXT_DEFAULT=${FFMPEG_TARGET_EXT_DEFAULT:-"mp4"}
+FFMPEG_MAX_HEIGHT_DEFAULT=${FFMPEG_MAX_HEIGHT_DEFAULT:-"720"}
+FFMPEG_MAX_BITRATE_DEFAULT=${FFMPEG_MAX_BITRATE_DEFAULT:-"1200000"}
 
-HANDBRAKE_ENCODE_OPT_DEFAULT="-e nvenc_h264 -r 29.97 --pfr -E faac -B 160 -6 dpl2 -R Auto -D 0.0 -f mp4 --crop 0:0:0:0 --loose-anamorphic -m --decomb -x cabac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0 -O --all-audio --all-subtitles"
-HANDBRAKE_KEEP_FILE_DEFAULT=1
-HANDBRAKE_TARGET_EXT_DEFAULT=ISO
-HANDBRAKE_MAX_HEIGHT_DEFAULT=1280
-HANDBRAKE_MAX_BITRATE_DEFAULT=2000
+HANDBRAKE_ENCODE_OPT_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"-e nvenc_h264 -r 29.97 --pfr -E faac -B 160 -6 dpl2 -R Auto -D 0.0 -f mp4 --crop 0:0:0:0 --loose-anamorphic -m --decomb -x cabac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0 -O --all-audio --all-subtitles"}
+HANDBRAKE_KEEP_FILE_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"1"}
+HANDBRAKE_TARGET_EXT_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"ISO"}
+HANDBRAKE_MAX_HEIGHT_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"1280"}
+HANDBRAKE_MAX_BITRATE_DEFAULT=${FFMPEG_KEEP_FILE_DEFAULT:-"2000"}
 
 while true
 do
