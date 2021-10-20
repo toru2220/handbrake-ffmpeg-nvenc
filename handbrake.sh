@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #if [ $# != 4 ]; then
 #    echo "Usage: encode.sh keepFile targetDir targetExt outputDir encodeOpt encodedLogFile"
@@ -13,18 +13,11 @@ encodedlog=${5:-`pwd`/encoded.log}
 mheight=${6:-1280}
 mbitrate=${7:-2000}
 encodeopt=${8:-"-e nvenc_h264 -r 29.97 --pfr -E faac -B 160 -6 dpl2 -R Auto -D 0.0 -f mp4 --crop 0:0:0:0 --loose-anamorphic -m --decomb -x cabac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0 -O --all-audio --all-subtitles"}
-destext=${9:-mp4}
+destext=${9:-"mp4"}
 
 count=1
 
-if [ -f "${targetdir}/encode-in-progress" ]; then
- echo "${targetdir} is encoding by other process. skip current job"
- return 0
-else
- touch "${targetdir}/encode-in-progress"
-fi
-
-for file in ${targetdir}/*.${targetext}; do
+while read -r file; do
 
  if [ -f "${file}" ]; then
   : 
@@ -33,25 +26,48 @@ for file in ${targetdir}/*.${targetext}; do
   continue
  fi
 
+ filedir=`dirname "${file}"`
+
+ if [ -f "${filedir}/encode-in-progress" ]; then
+  echo "${filedir} is encoding by other process. next"
+  continue
+ else
+  touch "${filedir}/encode-in-progress"
+ fi
+
  checksum=`md5sum -b "${file}" | cut -d ' ' -f 1`
 
  `grep -q "${checksum}" ${encodedlog}`
  if [ 0 = $? ]; then
   echo "file has encoded before:${file}"
+  rm -f "${filedir}/encode-in-progress"
   continue
  fi
  
- for titleid in $(seq 1 `lsdvd -q "${file}" | grep -c "^Title:"`); do 
-
-  destfile=${outputdir}/`basename "${file}" .${targetext}`"-"${titleid}"."${destext}
+ max_titles=`lsdvd -q "${file}" | grep -c "^Title:"`
+ title_count=0
+ 
+ file_withoutext=`basename "${file%.*}"`
+ 
+ for titleid in $(seq 1 ${max_titles}); do
+ 
+  destfile=${outputdir}/${file_withoutext}"-"${titleid}"."${destext}
   if [ -s "${destfile}" ]; then
-   destfile=${outputdir}/`basename "${file}" .${targetext}`"-"${titleid}"-"`date +%Y%m%d%H%M%S`"."${destext}
+   destfile=${outputdir}/${file_withoutext}"-"${titleid}"-"`date +%Y%m%d%H%M%S`"."${destext}
   fi
   
   echo HandBrakeCLI -i "${file}" -t ${titleid} -b ${mbitrate} -X ${mheight} ${encodeopt} -o "${destfile}"
   HandBrakeCLI -i "${file}" -t ${titleid} -b ${mbitrate} -X ${mheight} ${encodeopt} -o "${destfile}"
 
+  title_count=$((title_count+1))
+
  done
+
+ if [ ${max_titles} != ${title_count} ]; then
+  echo "encode uncompleted. please delete fragment file manually."
+  rm -f "${filedir}/encode-in-progress"
+  continue
+ fi
  
  sync
 
@@ -65,7 +81,7 @@ for file in ${targetdir}/*.${targetext}; do
 
  if [ 0 = ${keepfile} ]; then
   echo "delete original file:${file}"
-  rm "${file}"
+  rm -f "${file}"
  fi
 
  if [ ! -s "${destfile}" ]; then
@@ -76,10 +92,10 @@ for file in ${targetdir}/*.${targetext}; do
  count=$((count+1))
 
  if [ $count -gt 10 ]; then
-  rm -f "${targetdir}/encode-in-progress"
+  rm -f "${filedir}/encode-in-progress"
   return 0
  fi
  
-done
-
-rm -f "${targetdir}/encode-in-progress"
+ rm -f "${filedir}/encode-in-progress"
+ 
+done <<< "$(find ${targetdir} -type f  -regextype posix-egrep -regex "^.*?($targetext)$")"

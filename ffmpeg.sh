@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #if [ $# != 4 ]; then
 #    echo "Usage: encode.sh keepFile targetDir targetExt outputDir encodeOpt encodedLogFile"
@@ -12,20 +12,12 @@ outputdir=${4:-`pwd`}
 encodedlog=${5:-`pwd`/encoded.log}
 mheight=${6:-720}
 mbitrate=${7:-1200000}
-encodeopt=${8:-"-movflags +faststart -map_metadata 0 -c:v h264_nvenc -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"}
+encodeopt=${8:-"-c:v h264_nvenc -movflags +faststart -map_metadata 0 -profile:v high -level:v 4.0 -b_strategy 2 -bf 2 -flags cgop -coder ac -pix_fmt yuv420p -crf 32 -bufsize 16M -c:a mp3 -ac 1 -ar 22050 -b:a 96k"}
+destext=${9:-"mp4"}
 
 count=1
 
-if [ -f "${targetdir}/encode-in-progress" ]; then
- echo "${targetdir} is encoding by other process. skip current job"
- return 0
-else
- touch "${targetdir}/encode-in-progress"
-fi
-
-
-
-for file in ${targetdir}/*.${targetext}; do
+while read -r file; do
 
  if [ -f "${file}" ]; then
   :
@@ -33,22 +25,35 @@ for file in ${targetdir}/*.${targetext}; do
   echo "file not found:${file}"
   continue
  fi
+ 
+ filedir=`dirname "${file}"`
+
+ if [ -f "${filedir}/encode-in-progress" ]; then
+  echo "${filedir} is encoding by other process. next"
+  continue
+ else
+  touch "${filedir}/encode-in-progress"
+ fi
 
  checksum=`md5sum -b "${file}" | cut -d ' ' -f 1`
 
  `grep -q "${checksum}" ${encodedlog}`
  if [ 0 = $? ]; then
   echo "file has encoded before:${file}"
+  rm -f "${filedir}/encode-in-progress"
   continue
  fi
 
- destfile=${outputdir}/`basename "${file}"`
+ file_withoutext=`basename "${file%.*}"`
+ 
+ destfile=${outputdir}/${file_withoutext}"."${destext}
  if [ -s "${destfile}" ]; then
-  destfile=${outputdir}/`basename "${file}" .${targetext}`"-"`date +%Y%m%d%H%M%S`"."${targetext}
+  destfile=${outputdir}/${file_withoutext}"-"`date +%Y%m%d%H%M%S`"."${destext}
  fi
 
  bitrate=`ffprobe -show_entries format=bit_rate -v quiet -of csv="p=0" -i "${file}"`
- height=`ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1:nk=1 -i "${file}"`
+ height_all=`ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1:nk=1 -i "${file}"`
+ height=(${height_all// / })
 
  maxheight=`test ${height} -gt ${mheight} && echo ${mheight} || echo ${height}`
  maxbitrate=`test ${bitrate} -gt ${mbitrate} && echo ${mbitrate} || echo ${bitrate}`
@@ -56,9 +61,22 @@ for file in ${targetdir}/*.${targetext}; do
  echo ${file}
  echo ${height} to ${maxheight}
  echo ${bitrate} to ${maxbitrate}
- echo ffmpeg -i "${file}" ${encodeopt} -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
-
+ 
+ echo ffmpeg -i "${file}" "${encodeopt}" -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
  ffmpeg -i "${file}" ${encodeopt} -maxrate ${maxbitrate} -vf scale=-1:${maxheight} "${destfile}"
+
+ duration_base=`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${file}"`
+ duration_dest=`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${destfile}"`
+
+ duration_base_sec=(${duration_base//./ })
+ duration_dest_sec=(${duration_dest//./ })
+
+ if [ "${duration_base_sec}" != "${duration_dest_sec}" ]; then
+  echo "encode uncompleted. delete fragment file:${destfile}"
+  rm -f "${destfile}"
+  rm -f "${filedir}/encode-in-progress"
+  continue
+ fi
 
  sync
 
@@ -83,11 +101,11 @@ for file in ${targetdir}/*.${targetext}; do
  count=$((count+1))
 
  if [ $count -gt 10 ]; then
-  rm -f "${targetdir}/encode-in-progress"
+  rm -f "${filedir}/encode-in-progress"
   return 0
  fi
  
-done
-
-rm -f "${targetdir}/encode-in-progress"
+ rm -f "${filedir}/encode-in-progress"
+ 
+done <<< "$(find ${targetdir} -type f  -regextype posix-egrep -regex "^.*?($targetext)$")"
 
