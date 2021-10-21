@@ -13,5 +13,6 @@ done && \
 ldconfig
 [ "$OLDPWD" ] && cd -
 #exec "$@"
-exec cd /usr/local/bin && bash start.sh
+cd /usr/local/bin
+bash ./start.sh
 
