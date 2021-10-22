@@ -14,6 +14,7 @@ mheight=${6:-1280}
 mbitrate=${7:-2000}
 encodeopt=${8:-"-e nvenc_h264 -r 29.97 --pfr -E faac -B 160 -6 dpl2 -R Auto -D 0.0 -f mp4 --crop 0:0:0:0 --loose-anamorphic -m --decomb -x cabac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0 -O --all-audio --all-subtitles"}
 destext=${9:-"mp4"}
+mtime=${10:-"+0"}
 
 count=1
 
@@ -103,4 +104,4 @@ while read -r file; do
  
  rm -f "${filedir}/encode-in-progress"
  
-done <<< "$(find ${targetdir} -type f  -regextype posix-egrep -regex "^.*?($targetext)$")"
+done <<< "$(find ${targetdir} -type f -mtime"$mtime" -regextype posix-egrep -regex "^.*?($targetext)$")"
