@@ -70,5 +70,5 @@ do
 
  done
  
- sleep 30
+ sleep 120
 done
