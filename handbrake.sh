@@ -19,7 +19,7 @@ count=1
 
 if [ -f `dirname "${encodedlog}"`"/encode_pause" ]; then
  echo "Encode has been paused. Please delete confdir's encode_pause if it will start"
- return 0
+ exit 0
 fi
 
 while read -r file; do
@@ -98,7 +98,7 @@ while read -r file; do
 
  if [ $count -gt 10 ]; then
   rm -f "${filedir}/encode-in-progress"
-  return 0
+  exit 0
  fi
  
  rm -f "${filedir}/encode-in-progress"
