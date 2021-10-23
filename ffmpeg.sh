@@ -18,12 +18,12 @@ mtime=${10:-"+0"}
 
 count=1
 
-if [ -f `dirname "${encodedlog}"`"/encode_pause" ]; then
- echo "Encode has been paused. Please delete confdir's encode_pause if it will start"
- exit 0
-fi
-
 while read -r file; do
+
+ if [ -f `dirname "${encodedlog}"`"/encode_pause" ]; then
+  echo "Encode has been paused. Please delete confdir's encode_pause if it will start"
+  exit 0
+ fi
 
  if [ -f "${file}" ]; then
   :
