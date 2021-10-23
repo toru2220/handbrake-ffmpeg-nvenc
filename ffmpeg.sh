@@ -113,5 +113,5 @@ while read -r file; do
  
  rm -f "${filedir}/encode-in-progress"
  
-done <<< "$(find ${targetdir} -type f -mtime "$mtime"-regextype posix-egrep -regex "^.*?($targetext)$")"
+done <<< "$(find ${targetdir} -type f -mtime "$mtime" -regextype posix-egrep -regex "^.*?($targetext)$")"
 
