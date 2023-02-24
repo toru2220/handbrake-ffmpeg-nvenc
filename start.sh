@@ -1,6 +1,12 @@
 #!/bin/bash
 
 find /*-in-* -type f -name "encode-in-progress" -exec rm "{}" \;
+rm /logs/ts-out.*
+
+if [ -f "/conf/encode_pause" ]; then
+ echo "encode_pause file exists. please re-run after deleting this file."
+ exit 0
+fi
 
 max_concurrent=${MAX_CONCURRENT:-1}
 max_loop=${MAX_LOOP:-10}
