@@ -26,6 +26,12 @@ HANDBRAKE_MTIME_DEFAULT=${HANDBRAKE_MTIME_DEFAULT:-"+0"}
 
 while true
 do
+
+ if [ -f "${ENCODED_LOG}/stop-encode" ]; then
+  echo "stop add job queue."
+  break
+ fi
+
  for i in $(seq 1 ${max_loop}); do
   var_name_ffmpeg_encode_opt="ffmpeg_encode_opt_${i}"
   var_name_ffmpeg_keep_file="ffmpeg_keep_file_${i}"
