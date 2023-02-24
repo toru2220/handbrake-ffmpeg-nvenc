@@ -3,11 +3,6 @@
 find /*-in-* -type f -name "encode-in-progress" -exec rm "{}" \;
 rm /logs/ts-out.*
 
-if [ -f "/conf/encode_pause" ]; then
- echo "encode_pause file exists. please re-run after deleting this file."
- exit 0
-fi
-
 max_concurrent=${MAX_CONCURRENT:-1}
 max_loop=${MAX_LOOP:-10}
 tsp -S $max_concurrent
@@ -30,8 +25,16 @@ HANDBRAKE_MAX_BITRATE_DEFAULT=${HANDBRAKE_MAX_BITRATE_DEFAULT:-"2000"}
 HANDBRAKE_DEST_EXT_DEFAULT=${HANDBRAKE_DEST_EXT_DEFAULT:-"mp4"}
 HANDBRAKE_MTIME_DEFAULT=${HANDBRAKE_MTIME_DEFAULT:-"+0"}
 
+if [ -f "${ENCODED_LOG}/encode_pause" ]; then
+ echo "encode_pause file exists. please re-run after deleting this file."
+ exit 0
+fi
+
 while true
 do
+
+ # delete past log files
+ find /logs -type f -mtime +3 -name "ts-out.*" -exec rm {} \;
 
  for i in $(seq 1 ${max_loop}); do
   var_name_ffmpeg_encode_opt="ffmpeg_encode_opt_${i}"
