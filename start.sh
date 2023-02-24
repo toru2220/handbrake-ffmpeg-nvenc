@@ -28,7 +28,7 @@ while true
 do
 
  if [ -f "${ENCODED_LOG}/stop-encode" ]; then
-  echo "stop add job queue."
+  echo "stop add job queue.."
   break
  fi
 
