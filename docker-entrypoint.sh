@@ -12,7 +12,3 @@ for f in * ; do
 done && \
 ldconfig
 [ "$OLDPWD" ] && cd -
-#exec "$@"
-cd /usr/local/bin
-bash ./start.sh
-
